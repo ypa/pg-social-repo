@@ -49,3 +49,15 @@ Table caption_tags  {
   post_id INTEGER [ref: > posts.id]
   user_id INTEGER [ref: > users.id]
 }
+
+Table hashtags {
+  id SERIAL [pk, increment]
+  created_at TIMESTAMP
+  title VARCHAR(20)
+}
+
+Table hagtags_posts {
+  id SERIAL [pk, increment]
+  hashtag_id INTEGER [ref: > hashtags.id]
+  post_id INTEGER [ref: > posts.id]
+}
