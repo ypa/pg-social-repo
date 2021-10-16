@@ -13,10 +13,10 @@ Table users {
 
 Table posts {
   id SERIAL [pk, increment]
+  user_id INTEGER [ref: > users.id]
   created_at TIMESTAMP
   updated_at TIMESTAMP
   url VARCHAR(200)
-  user_id INTEGER [ref: > users.id]
   caption VARCHAR(240)
   lat REAL
   lng REAL
@@ -34,9 +34,9 @@ Table comments {
 Table likes {
   id SERIAL [pk, increment]
   created_at TIMESTAMP
+  post_id INTEGER [ref: > posts.id]
   user_id INTEGER [ref: > users.id]
   comment_id INTEGER [ref: > comments.id]
-  post_id INTEGER [ref: > posts.id]
 }
 
 Table photo_tags {
