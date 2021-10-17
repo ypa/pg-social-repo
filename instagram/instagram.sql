@@ -23,3 +23,51 @@ CREATE TABLE posts (
 	lng REAL, CHECK(lng IS NULL OR (lng >= -180 AND lng <= 180)),
 	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE comments (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	contents VARCHAR(240) NOT NULL,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE likes (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	-- polymorphic association
+	post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+	comment_id INTEGER REFERENCES comments(id) ON DELETE CASCADE,
+	-- make sure either post_id or comment_id is populated
+	CHECK(
+		COALESCE((post_id)::BOOLEAN::INTEGER, 0)
+		+
+		COALESCE((comment_id)::BOOLEAN::INTEGER, 0)
+		= 1
+	),
+	-- make sure there is only one like per post or comment
+	UNIQUE(user_id, post_id, comment_id)
+);
+
+CREATE TABLE photo_tags(
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+	x INTEGER NOT NULL,
+	y INTEGER NOT NULL,
+	-- make sure a user is mentioned only once per post and not multiple times
+	UNIQUE(user_id, post_id)
+);
+
+CREATE TABLE caption_tags(
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+	-- make sure a user is mentioned link only once per comment and not multiple times
+	UNIQUE(user_id, post_id)
+);
