@@ -71,3 +71,25 @@ CREATE TABLE caption_tags(
 	-- make sure a user is mentioned link only once per comment and not multiple times
 	UNIQUE(user_id, post_id)
 );
+
+CREATE TABLE hashtags (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	title VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE hashtags_posts (
+	id SERIAL PRIMARY KEY,
+	hashtag_id INTEGER NOT NULL REFERENCES hashtags(id) ON DELETE CASCADE,
+	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+	UNIQUE (hashtag_id, post_id)
+);
+
+CREATE TABLE followers (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	leader_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	-- One user can only follow one user once
+	UNIQUE (leader_id, follower_id)
+);
