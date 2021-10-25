@@ -12,6 +12,7 @@ CREATE TABLE users (
 	-- make sure phone or email is provided
 	CHECK(COALESCE(phone, email) IS NOT NULL)
 );
+CREATE INDEX ON users (username);
 
 CREATE TABLE posts (
 	id SERIAL PRIMARY KEY,
