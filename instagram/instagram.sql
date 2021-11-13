@@ -122,7 +122,5 @@ CREATE MATERIALIZED VIEW weekly_likes AS(
 	GROUP BY week
 	ORDER BY week
 ) WITH DATA;
-
-
 -- to refresh materialized view
 -- REFRESH MATERIALIZED VIEW weekly_likes;
