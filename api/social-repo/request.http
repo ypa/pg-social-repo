@@ -12,3 +12,12 @@ content-type: application/json
     "username": "minty3",
     "bio": "I am a mint"
 }
+
+###
+PUT http://localhost:3005/users/1 HTTP/1.1
+content-type: application/json
+
+{
+    "username": "henry21",
+    "bio": "I have super powers"
+}
